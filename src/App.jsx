@@ -1,53 +1,34 @@
-import {Route, Routes, NavLink } from 'react-router-dom'
+import {Route, Routes } from 'react-router-dom'
 import {Home} from './pages/Home';
 import {NotFound} from './pages/NotFound';
 import CategoryPage from "./pages/CategoryPage";
 import DetailPage from "./pages/DetailPage";
 import "./App.css";
+import { AuthProvider } from './context/AuthProvider';
+import { MainLayout } from './layout/MainLayout';
+import { Login } from './pages/Login';
+import { PrivateRoute } from './component/PrivateRoute';
+
 function App() {
 
 	return (
     <>
-		<ul>
-			<li>
-				<NavLink 
-					style={ ({ isActive }) => isActive ? {color: "red"} : {}} 
-					to="/" 
-					>
-					Home
-				</NavLink>
-			</li>
-			<li>
-				<NavLink 
-					style={ ({ isActive }) => isActive ? {color: "red"} : {}} 
-					to="/heroes">Heroes
-				</NavLink>
-			</li>
-			<li>
-				<NavLink 
-				style={ ({ isActive }) => isActive ? {color: "red"} : {}} 
-				to="/locations">
-					Locations
-				</NavLink>
-			</li>
-			<li>
-				<NavLink 
-				style={ ({ isActive }) => isActive ? {color: "red"} : {}} 
-				to="/episodes">
-					Episodes
-				</NavLink>
-			</li>
-		</ul>
-		<Routes>
-			<Route path='/' element={ <Home />}/>
-			<Route path='/heroes/' element={ <CategoryPage category="Heroes" />}/>
-			<Route path='/locations/' element={ <CategoryPage category="Locations" />}/>
-			<Route path='/episodes/' element={ <CategoryPage category="Episodes" />}/>
-			<Route path="/heroes/:id" element={<DetailPage category="Heroes" />} />
-			<Route path="/locations/:id" element={<DetailPage category="Locations" />} />
-			<Route path="/episodes/:id" element={<DetailPage category="Episodes" />} />
-			<Route path='*' element={ <NotFound />}/>
-		</Routes>
+		<AuthProvider>
+			<Routes>
+				<Route element={ <MainLayout />}>
+					<Route path='/' element={ <Home />}/>
+					<Route path='/heroes/' element={ <PrivateRoute><CategoryPage category="Heroes" /></PrivateRoute>}/>
+					<Route path='/locations/' element={ <PrivateRoute><CategoryPage category="Locations" /></PrivateRoute>}/>
+					<Route path='/episodes/' element={ <PrivateRoute><CategoryPage category="Episodes" /></PrivateRoute>}/>
+					<Route path="/heroes/:id" element={<PrivateRoute><DetailPage category="Heroes" /></PrivateRoute>} />
+					<Route path="/locations/:id" element={<PrivateRoute><DetailPage category="Locations" /></PrivateRoute>} />
+					<Route path="/episodes/:id" element={<PrivateRoute><DetailPage category="Episodes" /></PrivateRoute>} />
+				</Route>
+				<Route path="/login" element={<Login />} />
+				<Route path='*' element={ <NotFound />}/>
+			</Routes>
+		</AuthProvider>
+		
 		
 	</>
   );
